@@ -979,6 +979,30 @@ async function confirmarPagamento() {
 
 async function iniciar() {
   loja = await window.carregarLojaRemota();
+  const videoCapa = $(".hero-video");
+  if (videoCapa) {
+    videoCapa.muted = true;
+    videoCapa.defaultMuted = true;
+    videoCapa.playsInline = true;
+    videoCapa.autoplay = true;
+    const reproduzirVideoCapa = () => {
+      if (document.visibilityState !== "visible") return;
+      videoCapa.play().catch((erro) => {
+        if (erro.name !== "AbortError") {
+          console.error("Não foi possível iniciar automaticamente o vídeo da capa.", erro);
+        }
+      });
+    };
+    videoCapa.addEventListener("canplay", reproduzirVideoCapa);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") reproduzirVideoCapa();
+      else videoCapa.pause();
+    });
+    reproduzirVideoCapa();
+  }
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    $("#filterModels").closest("details").open = false;
+  }
   try {
     const respostaSaude = await fetch("/api/health", { cache: "no-store" });
     const saude = respostaSaude.ok ? await respostaSaude.json() : {};

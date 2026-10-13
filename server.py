@@ -180,10 +180,10 @@ def money_in_cents(value):
     return int((amount * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 def pix_price_in_cents(product):
-    price = Decimal(str(product.get("preco"))) if isinstance(product, dict) else Decimal(str(product))
+    price_cents = money_in_cents(product.get("preco") if isinstance(product, dict) else product)
     if isinstance(product, dict) and product.get("categoria") == "Óculos inteligentes":
-        price *= Decimal("0.80")
-    return money_in_cents(price)
+        return int((Decimal(price_cents) * Decimal("0.80")).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+    return price_cents
 
 
 def call_blackcat(path, method, api_key, payload=None):

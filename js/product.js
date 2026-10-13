@@ -129,55 +129,32 @@ function renderizarGaleria() {
 function configurarVideoProduto() {
   const container = $("#productDemoVideo");
   const video = $("#productDemoVideoPlayer");
-  const fonte = video.querySelector("source");
   const produtoMeta = produto.nome.toLocaleLowerCase("pt-BR").includes("ray-ban meta");
   container.hidden = !produtoMeta;
   if (!produtoMeta) return;
 
-  let fonteCarregada = false;
-  let visivel = false;
   const atualizarReproducao = () => {
-    if (visivel && document.visibilityState === "visible") {
-      video.autoplay = true;
-      if (!fonteCarregada) {
-        fonte.src = fonte.dataset.src;
-        video.load();
-        fonteCarregada = true;
-      }
-      video.play().catch((erro) => {
-        if (erro.name !== "AbortError") {
-          console.error("Não foi possível iniciar automaticamente o vídeo do produto.", erro);
-        }
-      });
-    } else {
+    if (document.visibilityState !== "visible") {
       video.autoplay = false;
       video.pause();
+      return;
     }
-  };
-  const atualizarVisibilidadeDocumento = () => {
-    if (document.visibilityState === "visible") {
-      const limites = container.getBoundingClientRect();
-      visivel = limites.bottom > 0
-        && limites.top < window.innerHeight
-        && limites.right > 0
-        && limites.left < window.innerWidth;
-    } else {
-      visivel = false;
-    }
-    atualizarReproducao();
-  };
 
-  if ("IntersectionObserver" in window) {
-    const observador = new IntersectionObserver((entradas) => {
-      visivel = entradas.some((entrada) => entrada.isIntersecting);
-      atualizarReproducao();
-    }, { threshold: 0.1 });
-    observador.observe(container);
-  } else {
-    visivel = true;
-  }
-
-  document.addEventListener("visibilitychange", atualizarVisibilidadeDocumento);
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.autoplay = true;
+    video.poster = produto.imagem;
+    video.load();
+    video.play().catch((erro) => {
+      if (erro.name !== "AbortError") {
+        console.error("Não foi possível iniciar automaticamente o vídeo do produto.", erro);
+      }
+    });
+  };
+  document.addEventListener("visibilitychange", atualizarReproducao);
+  atualizarReproducao();
 }
 
 function renderizarProdutosRelacionados() {
