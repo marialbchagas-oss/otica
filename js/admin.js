@@ -50,6 +50,8 @@ function renderLogin() {
     <div class="login">
       <h1>Painel da loja</h1>
       <p>Acesse com a conta administrativa configurada no servidor.</p>
+      <label for="usuario">Usuário</label>
+      <input type="text" id="usuario" value="admin" autocomplete="username" required>
       <label for="senha">Senha</label>
       <input type="password" id="senha" autocomplete="current-password" required>
       <button class="btn btn-verde" id="entrar">Entrar</button>
@@ -61,7 +63,10 @@ function renderLogin() {
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "admin", password: document.getElementById("senha").value })
+        body: JSON.stringify({
+          username: document.getElementById("usuario").value.trim(),
+          password: document.getElementById("senha").value
+        })
       });
       const result = await lerRespostaApi(response);
       if (!response.ok) throw new Error(result.error || "Não foi possível entrar.");

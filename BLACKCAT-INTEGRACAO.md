@@ -1,5 +1,7 @@
 ﻿# Administração, pedidos e integrações
 
+Para publicar o painel e a API em hospedagem PHP/MySQL, consulte [PHP-HOSTING.md](./PHP-HOSTING.md). As instruções abaixo são para o servidor Python.
+
 ## Preparar o servidor
 
 O painel administrativo usa autenticação mantida no servidor. Antes do primeiro início, configure em `.env` (local) ou nas variáveis do provedor (produção):
